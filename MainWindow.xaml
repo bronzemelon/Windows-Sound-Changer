@@ -1,0 +1,48 @@
+﻿<Window x:Class="Windows_Sound_Changer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Windows_Sound_Changer" xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Title="Windows Sound Changer" MinHeight="600" MinWidth="800" Height="600" Width="800">
+    <Grid Name="Grid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBlock FontSize="16" Margin="10,10,0,0">
+            To change sounds, click a program event in the following list and then select a sound to apply.
+        </TextBlock>
+        <Rectangle Grid.Row="2" Fill="#E6E5E5" Stroke="Black" Margin="20,0,20,0"></Rectangle>
+
+        <TextBlock Grid.Row="2" Padding="30,2,0,0">Windows</TextBlock>
+        <ListBox Name="ListBox" Grid.Row="2" Background="#E6E5E5" Margin="21,20,21,1" HorizontalContentAlignment="Stretch">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <DockPanel Margin="5,1,10,0">
+                        <Button Content="{Binding ButtonText}" Click="OpenFileDialog_Click"
+                                MouseEnter="UpdateHoveringTextForEnteringSoundButtons"
+                                MouseLeave="UpdateHoveringTextForLeavingSoundButtons" Uid="{Binding Id}"
+                                Tag="{Binding}" Width="200" MaxWidth="200" DockPanel.Dock="Right" />
+                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                    </DockPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Button Name="ApplyButton" Grid.Row="3" HorizontalAlignment="Right" VerticalAlignment="Center" Height="25" Width="100" Margin="0,0,20,0">Apply</Button>
+        <Button Name="PlayButton" Grid.Row="3" HorizontalAlignment="Right" VerticalAlignment="Center" Height="25" Width="100" Margin="0,0,125,0">Play</Button>
+        <Button Name="RevertButton" Grid.Row="3" HorizontalAlignment="Right" VerticalAlignment="Center" Height="25" Width="100" Margin="0,0,230,0">Revert</Button>
+        <Button Name="OpenSoundSettingsButton" Grid.Row="3" HorizontalAlignment="Right" VerticalAlignment="Center" Height="25" Width="150" Margin="0,0,335,0">Open Sound Settings</Button>
+        
+        <ComboBox Name="Dropdown" Grid.Row="3" HorizontalAlignment="Left" Margin="20,0,0,0" Height="22" Width="200" SelectedIndex="0">
+            <ComboBoxItem>Windows 11</ComboBoxItem>
+            <ComboBoxItem>Windows 10</ComboBoxItem>
+        </ComboBox>
+        <TextBlock Name="HoverText" Grid.Row="4" Text="Hovering Text" VerticalAlignment="Center" Margin="20,0,0,0"></TextBlock>
+    </Grid>
+</Window>
