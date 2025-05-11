@@ -40,8 +40,23 @@
         <Button Name="OpenSoundSettingsButton" Grid.Row="3" HorizontalAlignment="Right" VerticalAlignment="Center" Height="25" Width="150" Margin="0,0,335,0">Open Sound Settings</Button>
         
         <ComboBox Name="Dropdown" Grid.Row="3" HorizontalAlignment="Left" Margin="20,0,0,0" Height="22" Width="200" SelectedIndex="0">
+            <ComboBoxItem>-- Choose Preset --</ComboBoxItem>
             <ComboBoxItem>Windows 11</ComboBoxItem>
             <ComboBoxItem>Windows 10</ComboBoxItem>
+            <ComboBoxItem>Windows 7</ComboBoxItem>
+            <ComboBoxItem>Windows 7 Afternoon</ComboBoxItem>
+            <ComboBoxItem>Windows 7 Calligraphy</ComboBoxItem>
+            <ComboBoxItem>Windows 7 Characters</ComboBoxItem>
+            <ComboBoxItem>Windows 7 Cityscape</ComboBoxItem>
+            <ComboBoxItem>Windows 7 Delta</ComboBoxItem>
+            <ComboBoxItem>Windows 7 Festival</ComboBoxItem>
+            <ComboBoxItem>Windows 7 Garden</ComboBoxItem>
+            <ComboBoxItem>Windows 7 Heritage</ComboBoxItem>
+            <ComboBoxItem>Windows 7 Landscape</ComboBoxItem>
+            <ComboBoxItem>Windows 7 Quirky</ComboBoxItem>
+            <ComboBoxItem>Windows 7 Raga</ComboBoxItem>
+            <ComboBoxItem>Windows 7 Savanna</ComboBoxItem>
+            <ComboBoxItem>Windows 7 Sonata</ComboBoxItem>
         </ComboBox>
         <TextBlock Name="HoverText" Grid.Row="4" Text="Hovering Text" VerticalAlignment="Center" Margin="20,0,0,0"></TextBlock>
     </Grid>

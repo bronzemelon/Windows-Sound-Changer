@@ -1,12 +1,11 @@
 ﻿using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Diagnostics;
-using System.Media;
 using System.Security.Principal;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.IO;
+using System.Windows.Media;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using TaskDialog = Microsoft.WindowsAPICodePack.Dialogs.TaskDialog;
 
@@ -18,8 +17,7 @@ namespace Windows_Sound_Changer;
 public partial class MainWindow : Window
 {
     List<Item> items;
-    List<Preset> Windows11, Windows10;
-    Item item;
+    Item? item;
 
     public MainWindow()
     {
@@ -39,7 +37,7 @@ public partial class MainWindow : Window
             PlaySound(@"C:\Windows\Media\Windows Exclamation.wav");
             TaskDialogResult result = dialog.Show();
 
-            if (result == TaskDialogResult.No) Application.Current.Shutdown(); 
+            if (result == TaskDialogResult.No) Application.Current.Shutdown();
         }
 
         // Creates every item in the Windows tree. This does not include Microsoft Visual Studio tree, File explorer tree and Windows Speech Recognition tree.
@@ -56,6 +54,7 @@ public partial class MainWindow : Window
             new() { Name = "Device Disconnect", KeyName = "DeviceDisconnect" },
             new() { Name = "Device Failed to Connect", KeyName = "DeviceFail" },
             new() { Name = "Exclamation", KeyName = "SystemExclamation" },
+            new() { Name = "Exit Windows", KeyName = "SystemExit"},
             new() { Name = "Instant Message Notification", KeyName = "Notification.IM" },
             new() { Name = "Low Battery Alarm", KeyName = "LowBatteryAlarm" },
             new() { Name = "Maximize", KeyName = "Maximize" },
@@ -64,7 +63,7 @@ public partial class MainWindow : Window
             new() { Name = "Message Nudge", KeyName = "MessageNudge" },
             new() { Name = "Minimize", KeyName = "Minimize" },
             new() { Name = "New Fax Notification", KeyName = "FaxBeep" },
-            new() { Name = "New Mail Notification", KeyName = "Notification.Mail" },
+            new() { Name = "New Mail Notification", KeyName = "MailBeep" },
             new() { Name = "New Text Message Notification", KeyName = "Notification.SMS" },
             new() { Name = "NFP Completion", KeyName = "Notification.Proximity" },
             new() { Name = "NFP Connection", KeyName = "ProximityConnection" },
@@ -79,83 +78,9 @@ public partial class MainWindow : Window
             new() { Name = "System Notification", KeyName = "SystemNotification" },
             new() { Name = "Show Toolbar Band", KeyName = "ShowBand" },
             new() { Name = "Windows Change Theme", KeyName = "ChangeTheme" },
+            new() { Name = "Windows Logoff", KeyName = "WindowsLogoff"},
+            new() { Name = "Windows Logon", KeyName = "WindowsLogon"},
             new() { Name = "Windows User Account Control", KeyName = "WindowsUAC" }
-        };
-        Windows11 = new()
-        {
-            new() { Name = "SystemAsterisk", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 11\Windows Background.wav" },
-            new() { Name = "Notification.Reminder", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 11\Windows Notify Calendar.wav" },
-            new() { Name = "Close", FileName = "" },
-            new() { Name = "CriticalBatteryAlarm", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 11\Windows Battery Critical.wav" },
-            new() { Name = "SystemHand", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 11\Windows Foreground.wav" },
-            new() { Name = ".Default", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 11\Windows Background.wav" },
-            new() { Name = "MailBeep", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 11\Windows Notify Email.wav" },
-            new() { Name = "DeviceConnect", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 11\Windows Hardware Insert.wav" },
-            new() { Name = "DeviceDisconnect", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 11\Windows Hardware Remove.wav" },
-            new() { Name = "DeviceFail", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 11\Windows Hardware Fail.wav" },
-            new() { Name = "SystemExclamation", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 11\Windows Exclamation.wav" },
-            new() { Name = "Notification.IM", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 11\Windows Notify Messaging.wav" },
-            new() { Name = "LowBatteryAlarm", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 11\Windows Battery Low.wav" },
-            new() { Name = "Maximize", FileName = "" },
-            new() { Name = "MenuCommand", FileName = "" },
-            new() { Name = "MenuPopup", FileName = "" },
-            new() { Name = "MessageNudge", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 11\Windows Message Nudge.wav" },
-            new() { Name = "Minimize", FileName = "" },
-            new() { Name = "FaxBeep", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 11\Windows Notify Email.wav" },
-            new() { Name = "Notification.Mail", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 11\Windows Notify Email.wav" },
-            new() { Name = "Notification.SMS" , FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 11\Windows Notify Messaging.wav" },
-            new() { Name = "Notification.Proximity", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 11\Windows Proximity Notification.wav" },
-            new() { Name = "ProximityConnection", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 11\Windows Proximity Connection.wav" },
-            new() { Name = "Notification.Default", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 11\Windows Notify System Generic.wav"},
-            new() { Name = "Open", FileName = "" },
-            new() { Name = "CCSelect", FileName = ""},
-            new() { Name = "PrintComplete", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 11\Windows Print complete.wav" },
-            new() { Name = "AppGPFault" , FileName = ""},
-            new() { Name = "SystemQuestion", FileName = "" },
-            new() { Name = "RestoreDown", FileName = "" },
-            new() { Name = "RestoreUp" , FileName = "" },
-            new() { Name = "SystemNotification", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 11\Windows Background.wav" },
-            new() { Name = "ShowBand" , FileName = "" },
-            new() { Name = "ChangeTheme" , FileName = "" },
-            new() { Name = "WindowsUAC" , FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 11\Windows User Account Control.wav" }
-        };
-        Windows10 = new()
-        {
-            new() { Name = "SystemAsterisk", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 10\Windows Background.wav" },
-            new() { Name = "Notification.Reminder", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 10\Windows Notify Calendar.wav" },
-            new() { Name = "Close", FileName = "" },
-            new() { Name = "CriticalBatteryAlarm", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 10\Windows Battery Critical.wav" },
-            new() { Name = "SystemHand", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 10\Windows Foreground.wav" },
-            new() { Name = ".Default", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 10\Windows Background.wav" },
-            new() { Name = "MailBeep", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 10\Windows Notify Email.wav" },
-            new() { Name = "DeviceConnect", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 10\Windows Hardware Insert.wav" },
-            new() { Name = "DeviceDisconnect", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 10\Windows Hardware Remove.wav" },
-            new() { Name = "DeviceFail", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 10\Windows Hardware Fail.wav" },
-            new() { Name = "SystemExclamation", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 10\Windows Exclamation.wav" },
-            new() { Name = "Notification.IM", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 10\Windows Notify Messaging.wav" },
-            new() { Name = "LowBatteryAlarm", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 10\Windows Battery Low.wav" },
-            new() { Name = "Maximize", FileName = "" },
-            new() { Name = "MenuCommand", FileName = "" },
-            new() { Name = "MenuPopup", FileName = "" },
-            new() { Name = "MessageNudge", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 10\Windows Message Nudge.wav" },
-            new() { Name = "Minimize", FileName = "" },
-            new() { Name = "FaxBeep", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 10\Windows Notify Email.wav" },
-            new() { Name = "Notification.Mail", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 10\Windows Notify Email.wav" },
-            new() { Name = "Notification.SMS" , FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 10\Windows Notify Messaging.wav" },
-            new() { Name = "Notification.Proximity", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 10\Windows Proximity Notification.wav" },
-            new() { Name = "ProximityConnection", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 10\Windows Proximity Connection.wav" },
-            new() { Name = "Notification.Default", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 10\Windows Notify System Generic.wav"},
-            new() { Name = "Open", FileName = "" },
-            new() { Name = "CCSelect", FileName = ""},
-            new() { Name = "PrintComplete", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 10\Windows Print complete.wav" },
-            new() { Name = "AppGPFault" , FileName = ""},
-            new() { Name = "SystemQuestion", FileName = "" },
-            new() { Name = "RestoreDown", FileName = "" },
-            new() { Name = "RestoreUp" , FileName = "" },
-            new() { Name = "SystemNotification", FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 10\Windows Background.wav" },
-            new() { Name = "ShowBand" , FileName = "" },
-            new() { Name = "ChangeTheme" , FileName = "" },
-            new() { Name = "WindowsUAC" , FileName = @$"{Environment.CurrentDirectory}\sounds\Windows 10\Windows User Account Control.wav"}
         };
 
         // Assigns ID to act as an index for ListBox
@@ -226,7 +151,7 @@ public partial class MainWindow : Window
             chosenSoundFile = initialSoundFile;
         }
         changesToApply.Clear();
-        if (string.IsNullOrEmpty(chosenSoundFile)) PlayButton.IsEnabled = false;
+        PlayButton.IsEnabled = false;
         ApplyButton.IsEnabled = false;
     }
     private void OpenSoundSettings_Click(object sender, RoutedEventArgs e) => Process.Start("control", "mmsys.cpl,,2");
@@ -274,7 +199,8 @@ public partial class MainWindow : Window
     {
         item = (Item)ListBox.SelectedItem;
         using RegistryKey? registryKey = Registry.CurrentUser.OpenSubKey(@$"{registryPrefix}\{item.KeyName}\.Current");
-        initialSoundFile = registryKey.GetValue("").ToString();
+        if (registryKey.GetValue("") == null) initialSoundFile = "";
+        else initialSoundFile = registryKey.GetValue("").ToString();
 
         if (initialSoundFile == "" && !item.IsModified)
         {
@@ -291,13 +217,17 @@ public partial class MainWindow : Window
     }
     private void Dropdown_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
+        RevertButton_Click("just revert all my changes gng", e);
         var dropDownItem = Dropdown.SelectedItem as ComboBoxItem;
         string value = dropDownItem.Content.ToString();
 
         switch (value)
         {
+            case "-- Choose Preset --":
+                RevertButton_Click("just revert my changes gng", e);
+                break;
             case "Windows 11":
-                foreach (var item in Windows11)
+                foreach (var item in Preset.Windows11)
                     for (int i = 0; i < items.Count; i++)
                         if (item.Name == items[i].KeyName)
                         {
@@ -310,7 +240,189 @@ public partial class MainWindow : Window
                 chosenSoundFile = changesToApply[item.KeyName];
                 break;
             case "Windows 10":
-                foreach (var item in Windows10)
+                foreach (var item in Preset.Windows10)
+                    for (int i = 0; i < items.Count; i++)
+                        if (item.Name == items[i].KeyName)
+                        {
+                            bool changeAdded = changesToApply.TryAdd(item.Name, item.FileName);
+                            if (!changeAdded) changesToApply[item.Name] = item.FileName;
+                            if (!string.IsNullOrEmpty(item.FileName)) items[i].ButtonText = item.FileName.Split(@"\").Last();
+
+                            items[i].IsModified = true;
+                        }
+                chosenSoundFile = changesToApply[item.KeyName];
+                break;
+            case "Windows 7":
+                foreach (var item in Preset.Windows7)
+                    for (int i = 0; i < items.Count; i++)
+                        if (item.Name == items[i].KeyName)
+                        {
+                            bool changeAdded = changesToApply.TryAdd(item.Name, item.FileName);
+                            if (!changeAdded) changesToApply[item.Name] = item.FileName;
+                            if (!string.IsNullOrEmpty(item.FileName)) items[i].ButtonText = item.FileName.Split(@"\").Last();
+
+                            items[i].IsModified = true;
+                        }
+                chosenSoundFile = changesToApply[item.KeyName];
+                break;
+            case "Windows 7 Afternoon":
+                foreach (var item in Preset.Windows7_Afternoon)
+                    for (int i = 0; i < items.Count; i++)
+                        if (item.Name == items[i].KeyName)
+                        {
+                            bool changeAdded = changesToApply.TryAdd(item.Name, item.FileName);
+                            if (!changeAdded) changesToApply[item.Name] = item.FileName;
+                            if (!string.IsNullOrEmpty(item.FileName)) items[i].ButtonText = item.FileName.Split(@"\").Last();
+
+                            items[i].IsModified = true;
+                        }
+                chosenSoundFile = changesToApply[item.KeyName];
+                break;
+            case "Windows 7 Calligraphy":
+                foreach (var item in Preset.Windows7_Calligraphy)
+                    for (int i = 0; i < items.Count; i++)
+                        if (item.Name == items[i].KeyName)
+                        {
+                            bool changeAdded = changesToApply.TryAdd(item.Name, item.FileName);
+                            if (!changeAdded) changesToApply[item.Name] = item.FileName;
+                            if (!string.IsNullOrEmpty(item.FileName)) items[i].ButtonText = item.FileName.Split(@"\").Last();
+
+                            items[i].IsModified = true;
+                        }
+                chosenSoundFile = changesToApply[item.KeyName];
+                break;
+            case "Windows 7 Characters":
+                foreach (var item in Preset.Windows7_Characters)
+                    for (int i = 0; i < items.Count; i++)
+                        if (item.Name == items[i].KeyName)
+                        {
+                            bool changeAdded = changesToApply.TryAdd(item.Name, item.FileName);
+                            if (!changeAdded) changesToApply[item.Name] = item.FileName;
+                            if (!string.IsNullOrEmpty(item.FileName)) items[i].ButtonText = item.FileName.Split(@"\").Last();
+
+                            items[i].IsModified = true;
+                        }
+                chosenSoundFile = changesToApply[item.KeyName];
+                break;
+            case "Windows 7 Cityscape":
+                foreach (var item in Preset.Windows7_Cityscape)
+                    for (int i = 0; i < items.Count; i++)
+                        if (item.Name == items[i].KeyName)
+                        {
+                            bool changeAdded = changesToApply.TryAdd(item.Name, item.FileName);
+                            if (!changeAdded) changesToApply[item.Name] = item.FileName;
+                            if (!string.IsNullOrEmpty(item.FileName)) items[i].ButtonText = item.FileName.Split(@"\").Last();
+
+                            items[i].IsModified = true;
+                        }
+                chosenSoundFile = changesToApply[item.KeyName];
+                break;
+            case "Windows 7 Delta":
+                foreach (var item in Preset.Windows7_Delta)
+                    for (int i = 0; i < items.Count; i++)
+                        if (item.Name == items[i].KeyName)
+                        {
+                            bool changeAdded = changesToApply.TryAdd(item.Name, item.FileName);
+                            if (!changeAdded) changesToApply[item.Name] = item.FileName;
+                            if (!string.IsNullOrEmpty(item.FileName)) items[i].ButtonText = item.FileName.Split(@"\").Last();
+
+                            items[i].IsModified = true;
+                        }
+                chosenSoundFile = changesToApply[item.KeyName];
+                break;
+            case "Windows 7 Festival":
+                foreach (var item in Preset.Windows7_Festival)
+                    for (int i = 0; i < items.Count; i++)
+                        if (item.Name == items[i].KeyName)
+                        {
+                            bool changeAdded = changesToApply.TryAdd(item.Name, item.FileName);
+                            if (!changeAdded) changesToApply[item.Name] = item.FileName;
+                            if (!string.IsNullOrEmpty(item.FileName)) items[i].ButtonText = item.FileName.Split(@"\").Last();
+
+                            items[i].IsModified = true;
+                        }
+                chosenSoundFile = changesToApply[item.KeyName];
+                break;
+            case "Windows 7 Garden":
+                foreach (var item in Preset.Windows7_Garden)
+                    for (int i = 0; i < items.Count; i++)
+                        if (item.Name == items[i].KeyName)
+                        {
+                            bool changeAdded = changesToApply.TryAdd(item.Name, item.FileName);
+                            if (!changeAdded) changesToApply[item.Name] = item.FileName;
+                            if (!string.IsNullOrEmpty(item.FileName)) items[i].ButtonText = item.FileName.Split(@"\").Last();
+
+                            items[i].IsModified = true;
+                        }
+                chosenSoundFile = changesToApply[item.KeyName];
+                break;
+            case "Windows 7 Heritage":
+                foreach (var item in Preset.Windows7_Heritage)
+                    for (int i = 0; i < items.Count; i++)
+                        if (item.Name == items[i].KeyName)
+                        {
+                            bool changeAdded = changesToApply.TryAdd(item.Name, item.FileName);
+                            if (!changeAdded) changesToApply[item.Name] = item.FileName;
+                            if (!string.IsNullOrEmpty(item.FileName)) items[i].ButtonText = item.FileName.Split(@"\").Last();
+
+                            items[i].IsModified = true;
+                        }
+                chosenSoundFile = changesToApply[item.KeyName];
+                break;
+            case "Windows 7 Landscape":
+                foreach (var item in Preset.Windows7_Landscape)
+                    for (int i = 0; i < items.Count; i++)
+                        if (item.Name == items[i].KeyName)
+                        {
+                            bool changeAdded = changesToApply.TryAdd(item.Name, item.FileName);
+                            if (!changeAdded) changesToApply[item.Name] = item.FileName;
+                            if (!string.IsNullOrEmpty(item.FileName)) items[i].ButtonText = item.FileName.Split(@"\").Last();
+
+                            items[i].IsModified = true;
+                        }
+                chosenSoundFile = changesToApply[item.KeyName];
+                break;
+            case "Windows 7 Quirky":
+                foreach (var item in Preset.Windows7_Quirky)
+                    for (int i = 0; i < items.Count; i++)
+                        if (item.Name == items[i].KeyName)
+                        {
+                            bool changeAdded = changesToApply.TryAdd(item.Name, item.FileName);
+                            if (!changeAdded) changesToApply[item.Name] = item.FileName;
+                            if (!string.IsNullOrEmpty(item.FileName)) items[i].ButtonText = item.FileName.Split(@"\").Last();
+
+                            items[i].IsModified = true;
+                        }
+                chosenSoundFile = changesToApply[item.KeyName];
+                break;
+            case "Windows 7 Raga":
+                foreach (var item in Preset.Windows7_Raga)
+                    for (int i = 0; i < items.Count; i++)
+                        if (item.Name == items[i].KeyName)
+                        {
+                            bool changeAdded = changesToApply.TryAdd(item.Name, item.FileName);
+                            if (!changeAdded) changesToApply[item.Name] = item.FileName;
+                            if (!string.IsNullOrEmpty(item.FileName)) items[i].ButtonText = item.FileName.Split(@"\").Last();
+
+                            items[i].IsModified = true;
+                        }
+                chosenSoundFile = changesToApply[item.KeyName];
+                break;
+            case "Windows 7 Savanna":
+                foreach (var item in Preset.Windows7_Savanna)
+                    for (int i = 0; i < items.Count; i++)
+                        if (item.Name == items[i].KeyName)
+                        {
+                            bool changeAdded = changesToApply.TryAdd(item.Name, item.FileName);
+                            if (!changeAdded) changesToApply[item.Name] = item.FileName;
+                            if (!string.IsNullOrEmpty(item.FileName)) items[i].ButtonText = item.FileName.Split(@"\").Last();
+
+                            items[i].IsModified = true;
+                        }
+                chosenSoundFile = changesToApply[item.KeyName];
+                break;
+            case "Windows 7 Sonata":
+                foreach (var item in Preset.Windows7_Sonata)
                     for (int i = 0; i < items.Count; i++)
                         if (item.Name == items[i].KeyName)
                         {
@@ -323,17 +435,20 @@ public partial class MainWindow : Window
                 chosenSoundFile = changesToApply[item.KeyName];
                 break;
         }
-        ApplyButton.IsEnabled = true;
+
+        item = (Item)ListBox.SelectedItem;
+        if (item.ButtonText != "Choose Sound") PlayButton.IsEnabled = true;
+        if (dropDownItem.Content != "-- Choose Preset --") ApplyButton.IsEnabled = true;
     }
+    MediaPlayer player = new();
     private void PlaySound(string soundFile)
     {
-        SoundPlayer player = new();
         if (string.IsNullOrEmpty(soundFile))
         {
             HoverText.Text = "There is no sound to play.";
             return;
         }
-        player.SoundLocation = soundFile;
+        player.Open(new Uri(soundFile));
         player.Play();
     }
 
@@ -343,9 +458,4 @@ public partial class MainWindow : Window
         WindowsPrincipal principal = new(identity);
         return principal.IsInRole(WindowsBuiltInRole.Administrator);
     }
-}
-public struct Preset
-{
-    public string Name { get; set; }
-    public string FileName { get; set; }
 }
