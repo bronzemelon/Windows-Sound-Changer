@@ -14,3 +14,6 @@ A program for changing system sound effects/sound scheme on Windows 10/11.
 - 16 sound scheme presets
 
 ![image](https://github.com/user-attachments/assets/c0650538-f820-489e-a64d-bbb733b0156e)
+
+# License
+This program is licensed under the [MIT License.](https://opensource.org/license/mit)
